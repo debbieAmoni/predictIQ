@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useI18n } from '../../lib/hooks/useI18n';
+import { useActiveNavItem } from '../../../hooks/useActiveNavItem';
 import '../../styles/admin.css';
 
 function AdminAuthGate({ children }: { children: React.ReactNode }) {
@@ -48,10 +49,24 @@ function AdminAuthGate({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function AdminNavLink({ href, label }: { href: string; label: string }) {
+  const isActive = useActiveNavItem(href);
+  return (
+    <Link
+      href={href}
+      className={`admin-nav-link ${isActive ? 'active' : ''}`}
+      aria-current={isActive ? 'page' : undefined}
+    >
+      {label}
+    </Link>
+  );
+}
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { t } = useI18n();
   const pathname = usePathname();
 
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const navItems = [
     { href: '/admin/email/preview', label: t('admin.emailPreview') },
     { href: '/admin/email/analytics', label: t('admin.emailAnalytics') },
@@ -82,19 +97,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
 
             <nav className="admin-nav" aria-label={t('admin.subNav')}>
-              {navItems.map((item) => {
-                const isActive = pathname === item.href || pathname?.startsWith(`${item.href}/`);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`admin-nav-link ${isActive ? 'active' : ''}`}
-                    aria-current={isActive ? 'page' : undefined}
-                  >
-                    {item.label}
-                  </Link>
-                );
-              })}
+              {navItems.map((item) => (
+                <AdminNavLink key={item.href} href={item.href} label={item.label} />
+              ))}
             </nav>
 
             <div>
