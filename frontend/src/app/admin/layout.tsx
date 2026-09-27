@@ -3,9 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useI18n } from '../../lib/hooks/useI18n';
 import '../../styles/admin.css';
 
 function AdminAuthGate({ children }: { children: React.ReactNode }) {
+  const { t } = useI18n();
   const [key, setKey] = useState('');
   const [ok, setOk] = useState(false);
 
@@ -30,7 +32,7 @@ function AdminAuthGate({ children }: { children: React.ReactNode }) {
         }}
       >
         <label>
-          Admin API key
+          {t('admin.apiKey')}
           <input
             value={key}
             onChange={(e) => setKey(e.target.value)}
@@ -38,7 +40,7 @@ function AdminAuthGate({ children }: { children: React.ReactNode }) {
             type="password"
           />
         </label>
-        <button type="submit">Continue</button>
+        <button type="submit">{t('admin.continue')}</button>
       </form>
     );
   }
@@ -47,15 +49,16 @@ function AdminAuthGate({ children }: { children: React.ReactNode }) {
 }
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const { t } = useI18n();
   const pathname = usePathname();
 
   const navItems = [
-    { href: '/admin/email/preview', label: 'Email Preview' },
-    { href: '/admin/email/analytics', label: 'Email Analytics' },
-    { href: '/admin/blockchain/replay', label: 'Blockchain Replay' },
-    { href: '/admin/content', label: 'Content Management' },
-    { href: '/admin/audit', label: 'Audit Log' },
-    { href: '/admin/api-keys', label: 'API Keys' },
+    { href: '/admin/email/preview', label: t('admin.emailPreview') },
+    { href: '/admin/email/analytics', label: t('admin.emailAnalytics') },
+    { href: '/admin/blockchain/replay', label: t('admin.blockchainReplay') },
+    { href: '/admin/content', label: t('admin.contentManagement') },
+    { href: '/admin/audit', label: t('admin.auditLog') },
+    { href: '/admin/api-keys', label: t('admin.apiKeys') },
   ];
 
   return (
@@ -63,22 +66,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div className="admin-layout">
         {/* Skip navigation for accessibility */}
         <a href="#admin-main-content" className="skip-link">
-          Skip to admin content
+          {t('admin.skipToContent')}
         </a>
 
         {/* Admin Top Navigation */}
         <header className="admin-header" role="banner">
           <div className="admin-header-container">
             <div className="admin-brand-inner">
-              <Link href="/" className="admin-brand" aria-label="PredictIQ Home">
+              <Link href="/" className="admin-brand" aria-label={t('admin.home')}>
                 <span className="admin-brand-name">
                   Predict<span className="admin-brand-name-accent">IQ</span>
                 </span>
               </Link>
-              <span className="admin-brand-badge">Admin</span>
+              <span className="admin-brand-badge">{t('admin.badge')}</span>
             </div>
 
-            <nav className="admin-nav" aria-label="Admin sub-navigation">
+            <nav className="admin-nav" aria-label={t('admin.subNav')}>
               {navItems.map((item) => {
                 const isActive = pathname === item.href || pathname?.startsWith(`${item.href}/`);
                 return (
@@ -96,7 +99,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
             <div>
               <Link href="/" className="admin-exit-link">
-                Exit to Site →
+                {t('appShell.exitToSite')}
               </Link>
             </div>
           </div>
